@@ -3,11 +3,15 @@ package io.rong.imlib.demo;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,9 +21,10 @@ import io.rong.imlib.demo.message.TextMessage;
 import io.rong.imlib.demo.message.VoiceMessage;
 
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
     public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
+
     public static RongIMClient mRongIMClient;
 
 
@@ -30,6 +35,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
     private String mUserId;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
 
-
+        mHandler = new Handler(this);
     }
 
     @Override
@@ -109,14 +115,51 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case android.R.id.button2:
 
                 try {
+
                     InputStream is = getResources().openRawResource(R.raw.pic);
                     String path = DemoContext.getInstance().getResourceDir();
                     FileUtil.createFile("pic", path);
                     Uri uri = Uri.parse(path + "/pic");
 
                     uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
-                    ImageMessage imageMessage = new ImageMessage(uri);
-                    sendMessage(imageMessage);
+                    final ImageMessage imageMessage = new ImageMessage(uri);
+
+                    new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            InputStream stream = null;
+                            try {
+                                stream = new FileInputStream(imageMessage.getUri().getPath());
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+
+                            mRongIMClient.uploadMedia(RongIMClient.ConversationType.PRIVATE, mUserId, stream, new RongIMClient.UploadMediaCallback() {
+
+                                @Override
+                                public void onProgress(int i) {
+                                    Log.d("uploadMedia", "---------onProgress------" + i);
+                                }
+
+                                @Override
+                                public void onSuccess(String url) {
+                                    Log.d("uploadMedia", "---------onSuccess------" + url);
+                                    imageMessage.setUri(Uri.parse(url));
+                                    mHandler.obtainMessage(0, imageMessage).sendToTarget();
+                                }
+
+                                @Override
+                                public void onError(ErrorCode errorCode) {
+                                    Log.d("uploadMedia", "---------onError------" + errorCode.getValue());
+                                }
+                            });
+
+                        }
+                    }).start();
+
+//                    sendMessage(imageMessage);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -181,4 +224,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
 
+    @Override
+    public boolean handleMessage(Message msg) {
+        ImageMessage imageMessage = (ImageMessage) msg.obj;
+        sendMessage(imageMessage);
+
+        return false;
+    }
 }

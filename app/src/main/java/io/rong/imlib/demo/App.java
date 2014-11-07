@@ -14,6 +14,7 @@ import io.rong.imlib.demo.message.VoiceMessage;
 public class App extends Application {
 
     public static final String APP_KEY = "z3v5yqkbv8v30";
+//    public static final String APP_KEY = "c9kqb3rdk79pj";
 
 
     @Override
