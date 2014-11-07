@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.imlib.demo.message.ImageMessage;
 import io.rong.imlib.demo.message.TextMessage;
 import io.rong.imlib.demo.message.VoiceMessage;
@@ -285,6 +286,12 @@ public class DemoContext {
                             }
                         }
                     }).start();
+                }else if(message.getContent() instanceof GroupInvitationNotification){
+
+                    GroupInvitationNotification groupInvitationNotification=(GroupInvitationNotification)message.getContent();
+
+                    Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
+
                 }
             }
         });

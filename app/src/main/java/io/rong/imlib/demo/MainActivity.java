@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.imlib.demo.message.ImageMessage;
 import io.rong.imlib.demo.message.TextMessage;
 import io.rong.imlib.demo.message.VoiceMessage;
@@ -23,7 +24,8 @@ import io.rong.imlib.demo.message.VoiceMessage;
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-    public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
+//    public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
+    public static final String TOKEN = "Nq0rE9bKGLY9XeG5fu2sHySW8Ko1xVl7xb1sdjGIzGe29n812klvkTQfbO0/JNSvTgXiktpF5d9W1IhzqUB0bg==";
 
     public static RongIMClient mRongIMClient;
 
@@ -32,6 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private Button button1;
     private Button button2;
     private Button button3;
+    private Button button4;
 
 
     private String mUserId;
@@ -47,11 +50,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         button1 = (Button) findViewById(android.R.id.button1);
         button2 = (Button) findViewById(android.R.id.button2);
         button3 = (Button) findViewById(android.R.id.button3);
+        button4 = (Button) findViewById(R.id.group_invitation_notification);
 
         connectButton.setOnClickListener(this);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
+        button4.setOnClickListener(this);
 
         mHandler = new Handler(this);
     }
@@ -168,6 +173,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 break;
 
             case android.R.id.button3:
+
                 try {
                     InputStream is = getResources().openRawResource(R.raw.huihui);
                     String path = DemoContext.getInstance().getResourceDir();
@@ -182,6 +188,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     e.printStackTrace();
                 }
 
+                break;
+            case R.id.group_invitation_notification:
+                GroupInvitationNotification group=new GroupInvitationNotification("123456789","张三邀请你加入xxx群");
+                sendMessage(group);
+                break;
+            default:
                 break;
         }
 
@@ -207,6 +219,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         VoiceMessage voiceMessage = (VoiceMessage) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---uri--" + voiceMessage.getUri());
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】--长度---" + voiceMessage.getDuration());
+                    }else if(msg instanceof GroupInvitationNotification){
+                        GroupInvitationNotification groupInvitationNotification=(GroupInvitationNotification)msg;
+                        Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【群组邀请消息】---message--" + groupInvitationNotification.getMessage());
                     }
                 }
 

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import io.rong.imlib.AnnotationNotFoundException;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.imlib.demo.message.ImageMessage;
 import io.rong.imlib.demo.message.TextMessage;
 import io.rong.imlib.demo.message.VoiceMessage;
@@ -13,8 +14,8 @@ import io.rong.imlib.demo.message.VoiceMessage;
  */
 public class App extends Application {
 
-    public static final String APP_KEY = "z3v5yqkbv8v30";
-//    public static final String APP_KEY = "c9kqb3rdk79pj";
+//    public static final String APP_KEY = "z3v5yqkbv8v30";
+    public static final String APP_KEY = "c9kqb3rdk79pj";
 
 
     @Override
@@ -29,6 +30,7 @@ public class App extends Application {
             RongIMClient.registerMessageType(TextMessage.class);
             RongIMClient.registerMessageType(ImageMessage.class);
             RongIMClient.registerMessageType(VoiceMessage.class);
+            RongIMClient.registerMessageType(GroupInvitationNotification.class);
         } catch (AnnotationNotFoundException e) {
             e.printStackTrace();
         }
