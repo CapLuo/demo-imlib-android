@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "io.rong.imlib.demo"
+        minSdkVersion 9
+        targetSdkVersion 20
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        config {
+            storeFile file("../rong.key")
+            storePassword "Amigo123"
+            keyAlias "RongCloud"
+            keyPassword "Amigo123"
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/libs']
+        }
+    }
+
+
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/Rong_IMLib_v1_1_3.jar')
+    compile files('libs/core-0.0.30.jar')
+    compile 'com.android.support:support-v4:19.0.0'
+    compile 'com.github.chrisbanes.bitmapcache:library:2.3@jar'
+    compile 'com.jakewharton:disklrucache:2.0.2@jar'
+}
