@@ -31,9 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
-import io.rong.imlib.demo.message.ImageMessage;
-import io.rong.imlib.demo.message.TextMessage;
-import io.rong.imlib.demo.message.VoiceMessage;
+import io.rong.message.ImageMessage;
+import io.rong.message.TextMessage;
+import io.rong.message.VoiceMessage;
 import uk.co.senab.bitmapcache.BitmapLruCache;
 
 public class DemoContext {
@@ -231,14 +231,14 @@ public class DemoContext {
                 } else if (message.getContent() instanceof ImageMessage) {
 
                     final ImageMessage imageMessage = (ImageMessage) message.getContent();
-                    Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】---ThumUri--" + imageMessage.getThumUri());
-                    Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】----Uri--" + imageMessage.getUri());
+                    Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】---ThumUri--" + imageMessage.getLocalUri());
+                    Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】----Uri--" + imageMessage.getRemoteUri());
 
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
 
-                            mRongIMClient.downloadMedia(RongIMClient.ConversationType.PRIVATE, userId, RongIMClient.MediaType.IMAGE, imageMessage.getUri().toString(), new RongIMClient.DownloadMediaCallback() {
+                            mRongIMClient.downloadMedia(RongIMClient.ConversationType.PRIVATE, userId, RongIMClient.MediaType.IMAGE, imageMessage.getRemoteUri().toString(), new RongIMClient.DownloadMediaCallback() {
 
                                 @Override
                                 public void onProgress(int i) {
@@ -286,9 +286,9 @@ public class DemoContext {
                             }
                         }
                     }).start();
-                }else if(message.getContent() instanceof GroupInvitationNotification){
+                } else if (message.getContent() instanceof GroupInvitationNotification) {
 
-                    GroupInvitationNotification groupInvitationNotification=(GroupInvitationNotification)message.getContent();
+                    GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) message.getContent();
 
                     Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
 

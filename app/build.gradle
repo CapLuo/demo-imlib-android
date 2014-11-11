@@ -40,9 +40,7 @@ android {
 
 dependencies {
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/Rong_IMLib_v1_1_3.jar')
-    compile files('libs/core-0.0.30.jar')
+    compile files('libs/Rong_IMLib_v1_2_0.jar')
     compile 'com.android.support:support-v4:19.0.0'
-    compile 'com.github.chrisbanes.bitmapcache:library:2.3@jar'
-    compile 'com.jakewharton:disklrucache:2.0.2@jar'
+//    compile 'com.github.chrisbanes.bitmapcache:library:2.3@jar'
 }

@@ -5,9 +5,9 @@ import android.app.Application;
 import io.rong.imlib.AnnotationNotFoundException;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
-import io.rong.imlib.demo.message.ImageMessage;
-import io.rong.imlib.demo.message.TextMessage;
-import io.rong.imlib.demo.message.VoiceMessage;
+import io.rong.message.ImageMessage;
+import io.rong.message.TextMessage;
+import io.rong.message.VoiceMessage;
 
 /**
  * Created by zhjchen on 14/11/6.
@@ -28,8 +28,8 @@ public class App extends Application {
 
         try {
             RongIMClient.registerMessageType(TextMessage.class);
-            RongIMClient.registerMessageType(ImageMessage.class);
             RongIMClient.registerMessageType(VoiceMessage.class);
+            RongIMClient.registerMessageType(ImageMessage.class);
             RongIMClient.registerMessageType(GroupInvitationNotification.class);
         } catch (AnnotationNotFoundException e) {
             e.printStackTrace();

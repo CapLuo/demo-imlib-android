@@ -1,6 +1,7 @@
 package io.rong.imlib.demo;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.sea_monster.core.resource.ResourceManager;
+import com.sea_monster.core.resource.model.Resource;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,14 +21,14 @@ import java.io.InputStream;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
-import io.rong.imlib.demo.message.ImageMessage;
-import io.rong.imlib.demo.message.TextMessage;
-import io.rong.imlib.demo.message.VoiceMessage;
+import io.rong.message.ImageMessage;
+import io.rong.message.TextMessage;
+import io.rong.message.VoiceMessage;
 
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-//    public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
+    //    public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
     public static final String TOKEN = "Nq0rE9bKGLY9XeG5fu2sHySW8Ko1xVl7xb1sdjGIzGe29n812klvkTQfbO0/JNSvTgXiktpF5d9W1IhzqUB0bg==";
 
     public static RongIMClient mRongIMClient;
@@ -127,44 +131,17 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     Uri uri = Uri.parse(path + "/pic");
 
                     uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
-                    final ImageMessage imageMessage = new ImageMessage(uri);
 
-                    new Thread(new Runnable() {
+                    Bitmap bitmap = BitmapUtils.getResizedBitmap(this, uri, 240, 240);
 
-                        @Override
-                        public void run() {
+                    if (bitmap != null) {
 
-                            InputStream stream = null;
-                            try {
-                                stream = new FileInputStream(imageMessage.getUri().getPath());
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
+                        Uri thumUri = uri.buildUpon().appendQueryParameter("thum", "true").build();
 
-                            mRongIMClient.uploadMedia(RongIMClient.ConversationType.PRIVATE, mUserId, stream, new RongIMClient.UploadMediaCallback() {
+                        ImageMessage imageMessage = ImageMessage.obtain(thumUri, uri);
 
-                                @Override
-                                public void onProgress(int i) {
-                                    Log.d("uploadMedia", "---------onProgress------" + i);
-                                }
-
-                                @Override
-                                public void onSuccess(String url) {
-                                    Log.d("uploadMedia", "---------onSuccess------" + url);
-                                    imageMessage.setUri(Uri.parse(url));
-                                    mHandler.obtainMessage(0, imageMessage).sendToTarget();
-                                }
-
-                                @Override
-                                public void onError(ErrorCode errorCode) {
-                                    Log.d("uploadMedia", "---------onError------" + errorCode.getValue());
-                                }
-                            });
-
-                        }
-                    }).start();
-
-//                    sendMessage(imageMessage);
+                        sendMessage(imageMessage);
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -180,7 +157,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     FileUtil.createFile("voice", path);
                     Uri uri = Uri.parse(path + "/voice");
                     uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
-                    VoiceMessage voiceMessage = new VoiceMessage(uri, 10 * 1000);
+                    VoiceMessage voiceMessage = VoiceMessage.obtain(uri, 10 * 1000);
 
                     sendMessage(voiceMessage);
 
@@ -190,7 +167,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
                 break;
             case R.id.group_invitation_notification:
-                GroupInvitationNotification group=new GroupInvitationNotification("123456789","张三邀请你加入xxx群");
+                GroupInvitationNotification group = new GroupInvitationNotification("123456789", "张三邀请你加入xxx群");
                 sendMessage(group);
                 break;
             default:
@@ -219,8 +196,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         VoiceMessage voiceMessage = (VoiceMessage) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---uri--" + voiceMessage.getUri());
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】--长度---" + voiceMessage.getDuration());
-                    }else if(msg instanceof GroupInvitationNotification){
-                        GroupInvitationNotification groupInvitationNotification=(GroupInvitationNotification)msg;
+                    } else if (msg instanceof GroupInvitationNotification) {
+                        GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【群组邀请消息】---message--" + groupInvitationNotification.getMessage());
                     }
                 }
@@ -228,6 +205,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 @Override
                 public void onError(ErrorCode errorCode) {
                     Log.d("sendMessage", "----发发发发发--发送消息失败----ErrorCode----" + errorCode.getValue());
+                }
+
+                @Override
+                public void onProgress(int i) {
+                    Log.d("sendMessage", "----发发发发发--发送消息进度-------%" +  i);
                 }
             });
 
