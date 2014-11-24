@@ -27,7 +27,6 @@ public class App extends Application {
 
         RongIMClient.init(this, APP_KEY, R.drawable.ic_launcher);
 
-
         try {
             RongIMClient.registerMessageType(TextMessage.class);
             RongIMClient.registerMessageType(VoiceMessage.class);
