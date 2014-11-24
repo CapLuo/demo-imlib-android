@@ -6,6 +6,8 @@ import io.rong.imlib.AnnotationNotFoundException;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.ImageMessage;
+//import io.rong.message.ReqFriendNotification;
+//import io.rong.message.ResFriendNotification;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 
@@ -31,6 +33,7 @@ public class App extends Application {
             RongIMClient.registerMessageType(VoiceMessage.class);
             RongIMClient.registerMessageType(ImageMessage.class);
             RongIMClient.registerMessageType(GroupInvitationNotification.class);
+
         } catch (AnnotationNotFoundException e) {
             e.printStackTrace();
         }
@@ -38,6 +41,6 @@ public class App extends Application {
 
         DemoContext.getInstance().init(this);
 
-
+//        System.loadLibrary("imdemo");
     }
 }

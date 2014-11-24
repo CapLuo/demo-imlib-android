@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.ImageMessage;
+//import io.rong.message.ReqFriendNotification;
+//import io.rong.message.ResFriendNotification;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 import uk.co.senab.bitmapcache.BitmapLruCache;
@@ -226,7 +228,9 @@ public class DemoContext {
 
                 if (message.getContent() instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message.getContent();
-                    Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】-----" + textMessage.getContent());
+
+                    Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】-----" + textMessage.getContent()+",getExtra:"+textMessage.getExtra());
+                    Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】getPushContent-----" + textMessage.getPushContent());
 
                 } else if (message.getContent() instanceof ImageMessage) {
 
@@ -293,6 +297,8 @@ public class DemoContext {
                     Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
 
                 }
+
+
             }
         });
     }

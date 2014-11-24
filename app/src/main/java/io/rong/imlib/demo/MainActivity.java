@@ -11,17 +11,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.sea_monster.core.resource.ResourceManager;
-import com.sea_monster.core.resource.model.Resource;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.ImageMessage;
+//import io.rong.message.ReqFriendNotification;
+//import io.rong.message.ResFriendNotification;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 
@@ -41,6 +39,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private Button button4;
 
 
+
     private String mUserId;
     private Handler mHandler;
 
@@ -56,11 +55,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         button3 = (Button) findViewById(android.R.id.button3);
         button4 = (Button) findViewById(R.id.group_invitation_notification);
 
+
         connectButton.setOnClickListener(this);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
         button4.setOnClickListener(this);
+
 
         mHandler = new Handler(this);
     }
@@ -118,6 +119,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
             case android.R.id.button1:
                 TextMessage textMessage = TextMessage.obtain("明天不上班。。。。。。今天加班到天亮！！！！发送时间:" + System.currentTimeMillis());
+
+                textMessage.setExtra("文字消息Extra");
+                textMessage.setPushContent("push 内容setPushContent");
                 sendMessage(textMessage);
 
                 break;
@@ -170,6 +174,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 GroupInvitationNotification group = new GroupInvitationNotification("123456789", "张三邀请你加入xxx群");
                 sendMessage(group);
                 break;
+
             default:
                 break;
         }
@@ -184,10 +189,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
             mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserId, msg, new RongIMClient.SendMessageCallback() {
 
                 @Override
-                public void onSuccess() {
+                public void onSuccess(int id) {
 
                     if (msg instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) msg;
+                        textMessage.setExtra("文字消息Extra");
                         Log.d("sendMessage", "TextMessage---发发发发发--发送了一条【文字消息】-----" + textMessage.getContent());
                     } else if (msg instanceof ImageMessage) {
                         ImageMessage imageMessage = (ImageMessage) msg;
@@ -200,19 +206,20 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【群组邀请消息】---message--" + groupInvitationNotification.getMessage());
                     }
+
                 }
 
+
                 @Override
-                public void onError(ErrorCode errorCode) {
+                public void onError(int id,ErrorCode errorCode) {
                     Log.d("sendMessage", "----发发发发发--发送消息失败----ErrorCode----" + errorCode.getValue());
                 }
 
                 @Override
-                public void onProgress(int i) {
+                public void onProgress(int id,int i) {
                     Log.d("sendMessage", "----发发发发发--发送消息进度-------%" +  i);
                 }
             });
-
 
         } else {
             Toast.makeText(this, "请先连接。。。", Toast.LENGTH_LONG).show();

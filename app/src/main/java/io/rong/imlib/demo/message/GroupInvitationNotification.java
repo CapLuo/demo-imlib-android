@@ -20,9 +20,11 @@ public class GroupInvitationNotification extends RongIMClient.MessageContent {
     private String groupId;
     private String message;
 
+
     public GroupInvitationNotification(String groupId, String message) {
         this.groupId = groupId;
         this.message = message;
+
     }
 
     public GroupInvitationNotification(byte[] data, RongIMClient.Message message) {
@@ -38,6 +40,7 @@ public class GroupInvitationNotification extends RongIMClient.MessageContent {
             JSONObject jsonObj = new JSONObject(jsonStr);
             setGroupId(jsonObj.getString("groupId"));
             setMessage(jsonObj.getString("message"));
+
         } catch (JSONException e) {
             Log.e("JSONException", e.getMessage());
         }
@@ -53,6 +56,7 @@ public class GroupInvitationNotification extends RongIMClient.MessageContent {
 
             jsonObj.put("groupId", groupId);
             jsonObj.put("message", message);
+
 
         } catch (JSONException e) {
             Log.e("JSONException", e.getMessage());
@@ -92,4 +96,6 @@ public class GroupInvitationNotification extends RongIMClient.MessageContent {
     public void setMessage(String message) {
         this.message = message;
     }
+
+
 }
