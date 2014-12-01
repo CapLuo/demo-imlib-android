@@ -49,6 +49,27 @@
         android:layout_height="wrap_content" />
 
 
+        <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:id="@+id/req_friend_notification"
+        android:text="联系人（好友）操作通知消息"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:id="@+id/profile_notification"
+            android:text="资料变更通知消息"/>
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:id="@+id/command_notification"
+            android:text="命令通知消息"/>
+
+
     </LinearLayout>
 
 </ScrollView>

@@ -13,21 +13,23 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
+import io.rong.message.CommandNotificationMessage;
+import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
-//import io.rong.message.ReqFriendNotification;
-//import io.rong.message.ResFriendNotification;
+import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-    //    public static final String TOKEN = "dlZQXtLihq5mohiybibkaUmcbyeYIrXSDa0nFvL2mH/5zWOjUlJe+Aaszzzvx90roUr3nN+i0+Q=";
-    public static final String TOKEN = "Nq0rE9bKGLY9XeG5fu2sHySW8Ko1xVl7xb1sdjGIzGe29n812klvkTQfbO0/JNSvTgXiktpF5d9W1IhzqUB0bg==";
+//    public static final String TOKEN = "97s/gIdybGtqZbDJxj2nQRHrL+7N5sFEDNyWFhRUD5k/4OHS96t/nLvXrPfkMhZRTCJz6WRg93bcjXrO0RS6UA==";//dsafd
+//    public static final String TOKEN = "mNh2iIH0UTaWurXt3NM79Mvm/o4XK5QTKgksvmQJQNbUzzIlNCGVtlczQEfB08dPHBCJKStjd+LHrl8DaMhz7Q==";//yb001
+    public static final String TOKEN = "KIzXr65WBrQ5R9AxUxT0WCnX+HAGvjd6OaiiFOkZCUVGOMQcKnb0KDdlCXVYQbqMHoZrTQCApoC5TfELCP8oKg==";//ceshi token 1012
+
 
     public static RongIMClient mRongIMClient;
 
@@ -37,6 +39,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private Button button2;
     private Button button3;
     private Button button4;
+    private Button reqFriendButton;
+    private Button profileNotificationButton;
+    private Button commandeNotificationButton;
+
+
 
 
 
@@ -54,6 +61,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         button2 = (Button) findViewById(android.R.id.button2);
         button3 = (Button) findViewById(android.R.id.button3);
         button4 = (Button) findViewById(R.id.group_invitation_notification);
+        reqFriendButton = (Button) findViewById(R.id.req_friend_notification);
+        profileNotificationButton = (Button) findViewById(R.id.profile_notification);
+        commandeNotificationButton = (Button) findViewById(R.id.command_notification);
 
 
         connectButton.setOnClickListener(this);
@@ -61,6 +71,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
         button4.setOnClickListener(this);
+        reqFriendButton.setOnClickListener(this);
+        profileNotificationButton.setOnClickListener(this);
+        commandeNotificationButton.setOnClickListener(this);
 
 
         mHandler = new Handler(this);
@@ -162,7 +175,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     Uri uri = Uri.parse(path + "/voice");
                     uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
                     VoiceMessage voiceMessage = VoiceMessage.obtain(uri, 10 * 1000);
-
                     sendMessage(voiceMessage);
 
                 } catch (IOException e) {
@@ -171,10 +183,25 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
                 break;
             case R.id.group_invitation_notification:
+
                 GroupInvitationNotification group = new GroupInvitationNotification("123456789", "张三邀请你加入xxx群");
                 sendMessage(group);
                 break;
 
+            case R.id.req_friend_notification://联系人（好友）操作通知消息
+                ContactNotificationMessage contact = ContactNotificationMessage.obtain(ContactNotificationMessage.CONTACT_OPERATION_REQUEST,mUserId,"1011","请加我好友");
+                contact.setExtra("I'm Bob");
+                sendMessage(contact);
+                break;
+            case R.id.profile_notification://资料变更通知消息
+                ProfileNotificationMessage profile = ProfileNotificationMessage.obtain("","资料变更数据");
+                profile.setExtra("资料变更通知消息");
+                sendMessage(profile);
+                break;
+            case R.id.command_notification://命令通知消息，可以实现任意指令操作
+                CommandNotificationMessage command  = CommandNotificationMessage.obtain("删除","command delete");
+                sendMessage(command);
+                break;
             default:
                 break;
         }
@@ -193,7 +220,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
                     if (msg instanceof TextMessage) {
                         TextMessage textMessage = (TextMessage) msg;
-                        textMessage.setExtra("文字消息Extra");
                         Log.d("sendMessage", "TextMessage---发发发发发--发送了一条【文字消息】-----" + textMessage.getContent());
                     } else if (msg instanceof ImageMessage) {
                         ImageMessage imageMessage = (ImageMessage) msg;
@@ -205,6 +231,15 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     } else if (msg instanceof GroupInvitationNotification) {
                         GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【群组邀请消息】---message--" + groupInvitationNotification.getMessage());
+                    }else if(msg instanceof  ContactNotificationMessage){
+                        ContactNotificationMessage mContactNotificationMessage = (ContactNotificationMessage) msg;
+                        Log.d("sendMessage", "ContactNotificationMessage--发发发发发--发送了一条【联系人（好友）操作通知消息】---message--" + mContactNotificationMessage.getMessage());
+                    }else if(msg instanceof  ProfileNotificationMessage){
+                        ProfileNotificationMessage mProfileNotificationMessage = (ProfileNotificationMessage) msg;
+                        Log.d("sendMessage", "ProfileNotificationMessage--发发发发发--发送了一条【资料变更通知消息】---message--" + mProfileNotificationMessage.getData());
+                    }else if(msg instanceof  CommandNotificationMessage){
+                        CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) msg;
+                        Log.d("sendMessage", "CommandNotificationMessage--发发发发发--发送了一条【命令通知消息】---message--" + mCommandNotificationMessage.getData());
                     }
 
                 }

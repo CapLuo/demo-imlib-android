@@ -31,9 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
+import io.rong.message.CommandNotificationMessage;
+import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
-//import io.rong.message.ReqFriendNotification;
-//import io.rong.message.ResFriendNotification;
+import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
 import uk.co.senab.bitmapcache.BitmapLruCache;
@@ -296,8 +297,18 @@ public class DemoContext {
 
                     Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
 
-                }
+                }else if(message.getContent() instanceof ContactNotificationMessage){
+                    ContactNotificationMessage mContactNotificationMessage = (ContactNotificationMessage) message.getContent();
+                    Log.d("onReceived", "mContactNotificationMessage--收收收收--接收到一条【联系人（好友）操作通知消息】-----"+mContactNotificationMessage.getMessage()+",getExtra:"+mContactNotificationMessage.getExtra());
 
+                }else if(message.getContent() instanceof ProfileNotificationMessage){
+                    ProfileNotificationMessage mProfileNotificationMessage = (ProfileNotificationMessage) message.getContent();
+                    Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【资料变更通知消息】-----"+mProfileNotificationMessage.getData()+",getExtra:"+mProfileNotificationMessage.getExtra());
+
+                }else  if(message.getContent() instanceof CommandNotificationMessage){
+                    CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) message.getContent();
+                    Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【命令通知消息】-----"+mCommandNotificationMessage.getData()+",getName:"+mCommandNotificationMessage.getName());
+                }
 
             }
         });
