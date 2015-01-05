@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.CommandNotificationMessage;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
+import io.rong.message.LocationMessage;
 import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
@@ -26,14 +28,9 @@ import io.rong.message.VoiceMessage;
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-//    public static final String TOKEN = "97s/gIdybGtqZbDJxj2nQRHrL+7N5sFEDNyWFhRUD5k/4OHS96t/nLvXrPfkMhZRTCJz6WRg93bcjXrO0RS6UA==";//dsafd
-//    public static final String TOKEN = "mNh2iIH0UTaWurXt3NM79Mvm/o4XK5QTKgksvmQJQNbUzzIlNCGVtlczQEfB08dPHBCJKStjd+LHrl8DaMhz7Q==";//yb001
-    public static final String TOKEN = "KIzXr65WBrQ5R9AxUxT0WCnX+HAGvjd6OaiiFOkZCUVGOMQcKnb0KDdlCXVYQbqMHoZrTQCApoC5TfELCP8oKg==";//ceshi token 1012
-
+    public static final String TOKEN = "eDiyfgBezw3nkykFcMjAWkmcbyeYIrXSDa0nFvL2mH8LR+1EmUiA/Vol1bK3Cvoy167uyKjlDD/WfsYXpExsWw==";
 
     public static RongIMClient mRongIMClient;
-
-
     private Button connectButton;
     private Button button1;
     private Button button2;
@@ -42,19 +39,24 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private Button reqFriendButton;
     private Button profileNotificationButton;
     private Button commandeNotificationButton;
-
-
-
-
-
     private String mUserId;
     private Handler mHandler;
+    private Handler mWorkHandler;
+    private final static int IMAGEMESSAGE = 1;
+    private final static int VOICEMESSAGE = 2;
+    /**接收方Id,用于测试*/
+    private String mUserIdTest = "81";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        HandlerThread mHandlerThread  = new HandlerThread("SendMessage");
+        mHandlerThread.start();
+        mWorkHandler = new Handler(mHandlerThread.getLooper());
+        mHandler = new Handler(this);
 
         connectButton = (Button) findViewById(R.id.connect_button);
         button1 = (Button) findViewById(android.R.id.button1);
@@ -65,7 +67,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         profileNotificationButton = (Button) findViewById(R.id.profile_notification);
         commandeNotificationButton = (Button) findViewById(R.id.command_notification);
 
-
         connectButton.setOnClickListener(this);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
@@ -75,9 +76,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         profileNotificationButton.setOnClickListener(this);
         commandeNotificationButton.setOnClickListener(this);
 
-
-        mHandler = new Handler(this);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -121,18 +121,17 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     });
 
                     DemoContext.getInstance().setRongIMClient(mRongIMClient);
-                    DemoContext.getInstance().registerMessage();
+                    DemoContext.getInstance().registerReceiveMessageListerner();
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-
                 break;
 
             case android.R.id.button1:
-                TextMessage textMessage = TextMessage.obtain("明天不上班。。。。。。今天加班到天亮！！！！发送时间:" + System.currentTimeMillis());
 
+                TextMessage textMessage = TextMessage.obtain("明天不上班。。。。。。今天加班到天亮！！！！发送时间:" + System.currentTimeMillis());
                 textMessage.setExtra("文字消息Extra");
                 textMessage.setPushContent("push 内容setPushContent");
                 sendMessage(textMessage);
@@ -140,67 +139,52 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 break;
             case android.R.id.button2:
 
-                try {
 
-                    InputStream is = getResources().openRawResource(R.raw.pic);
-                    String path = DemoContext.getInstance().getResourceDir();
-                    FileUtil.createFile("pic", path);
-                    Uri uri = Uri.parse(path + "/pic");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
-
-                    Bitmap bitmap = BitmapUtils.getResizedBitmap(this, uri, 240, 240);
-
-                    if (bitmap != null) {
-
-                        Uri thumUri = uri.buildUpon().appendQueryParameter("thum", "true").build();
-
-                        ImageMessage imageMessage = ImageMessage.obtain(thumUri, uri);
-
-                        sendMessage(imageMessage);
+                        mWorkHandler.post(new SendImageMessageRunnable());
                     }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                });
 
                 break;
-
             case android.R.id.button3:
 
-                try {
-                    InputStream is = getResources().openRawResource(R.raw.huihui);
-                    String path = DemoContext.getInstance().getResourceDir();
-                    FileUtil.createFile("voice", path);
-                    Uri uri = Uri.parse(path + "/voice");
-                    uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
-                    VoiceMessage voiceMessage = VoiceMessage.obtain(uri, 10 * 1000);
-                    sendMessage(voiceMessage);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                        mWorkHandler.post(new SendVoiceMessageRunnable());
+                    }
+                });
 
                 break;
             case R.id.group_invitation_notification:
 
-                GroupInvitationNotification group = new GroupInvitationNotification("123456789", "张三邀请你加入xxx群");
+                GroupInvitationNotification  group = new GroupInvitationNotification(mUserIdTest, "张三邀请你加入xxx群");
                 sendMessage(group);
-                break;
 
+                break;
             case R.id.req_friend_notification://联系人（好友）操作通知消息
-                ContactNotificationMessage contact = ContactNotificationMessage.obtain(ContactNotificationMessage.CONTACT_OPERATION_REQUEST,mUserId,"1011","请加我好友");
+
+                ContactNotificationMessage contact = ContactNotificationMessage.obtain(ContactNotificationMessage.CONTACT_OPERATION_REQUEST,mUserId,mUserIdTest,"请加我好友");
                 contact.setExtra("I'm Bob");
                 sendMessage(contact);
+
                 break;
             case R.id.profile_notification://资料变更通知消息
-                ProfileNotificationMessage profile = ProfileNotificationMessage.obtain("","资料变更数据");
+
+                ProfileNotificationMessage profile = ProfileNotificationMessage.obtain(mUserIdTest,"资料变更数据");
                 profile.setExtra("资料变更通知消息");
                 sendMessage(profile);
+
                 break;
             case R.id.command_notification://命令通知消息，可以实现任意指令操作
+
                 CommandNotificationMessage command  = CommandNotificationMessage.obtain("删除","command delete");
                 sendMessage(command);
+
                 break;
             default:
                 break;
@@ -208,12 +192,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
     }
 
-
     private void sendMessage(final RongIMClient.MessageContent msg) {
 
         if (mRongIMClient != null) {
 
-            mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserId, msg, new RongIMClient.SendMessageCallback() {
+            mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserIdTest, msg, new RongIMClient.SendMessageCallback() {
 
                 @Override
                 public void onSuccess(int id) {
@@ -228,7 +211,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         VoiceMessage voiceMessage = (VoiceMessage) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---uri--" + voiceMessage.getUri());
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】--长度---" + voiceMessage.getDuration());
-                    } else if (msg instanceof GroupInvitationNotification) {
+                    }else if(msg instanceof  LocationMessage){
+                        LocationMessage location  = (LocationMessage) msg;
+                        Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---uri--" + location.getPoi());
+                    }else if (msg instanceof GroupInvitationNotification) {
                         GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) msg;
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【群组邀请消息】---message--" + groupInvitationNotification.getMessage());
                     }else if(msg instanceof  ContactNotificationMessage){
@@ -241,9 +227,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) msg;
                         Log.d("sendMessage", "CommandNotificationMessage--发发发发发--发送了一条【命令通知消息】---message--" + mCommandNotificationMessage.getData());
                     }
-
                 }
-
 
                 @Override
                 public void onError(int id,ErrorCode errorCode) {
@@ -265,9 +249,66 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
     @Override
     public boolean handleMessage(Message msg) {
-        ImageMessage imageMessage = (ImageMessage) msg.obj;
-        sendMessage(imageMessage);
+
+        if (msg.what == IMAGEMESSAGE){
+            ImageMessage imageMessage = (ImageMessage) msg.obj;
+            sendMessage(imageMessage);
+        }else if(msg.what == VOICEMESSAGE){
+
+        }
+
 
         return false;
     }
+
+    private class SendVoiceMessageRunnable implements  Runnable{
+
+        @Override
+        public void run() {
+
+            try {
+                InputStream is = getResources().openRawResource(R.raw.huihui);
+                String path = DemoContext.getInstance().getResourceDir();
+                FileUtil.createFile("voice", path);
+                Uri uri = Uri.parse(path + "/voice");
+                uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
+                VoiceMessage voiceMessage = VoiceMessage.obtain(uri, 10 * 5);
+                sendMessage(voiceMessage);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class SendImageMessageRunnable implements  Runnable{
+
+        @Override
+        public void run() {
+                try {
+
+                    InputStream is = getResources().openRawResource(R.raw.pic);
+                    String path = DemoContext.getInstance().getResourceDir();
+                    FileUtil.createFile("pic", path);
+                    Uri uri = Uri.parse(path + "/pic");
+
+                    uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
+
+                    Bitmap bitmap = BitmapUtils.getResizedBitmap(MainActivity.this, uri, 240, 240);
+
+                    if (bitmap != null) {
+
+                        Uri thumUri = uri.buildUpon().appendQueryParameter("thum", "true").build();
+
+                        ImageMessage imageMessage = ImageMessage.obtain(thumUri, uri);
+
+                        sendMessage(imageMessage);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
 }
+
+

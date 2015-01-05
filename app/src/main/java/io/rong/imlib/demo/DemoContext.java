@@ -10,15 +10,8 @@ import android.util.Log;
 
 import com.sea_monster.core.common.Const;
 import com.sea_monster.core.common.DiscardOldestPolicy;
-import com.sea_monster.core.network.DefaultHttpHandler;
-import com.sea_monster.core.network.HttpHandler;
-import com.sea_monster.core.resource.ResourceManager;
-import com.sea_monster.core.resource.cache.ResourceCacheWrapper;
-import com.sea_monster.core.resource.compress.ResourceCompressHandler;
 import com.sea_monster.core.resource.io.FileSysHandler;
 import com.sea_monster.core.resource.io.IFileSysHandler;
-import com.sea_monster.core.resource.io.ResourceRemoteWrapper;
-import com.sea_monster.core.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +30,6 @@ import io.rong.message.ImageMessage;
 import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
-import uk.co.senab.bitmapcache.BitmapLruCache;
 
 public class DemoContext {
 
@@ -104,22 +96,6 @@ public class DemoContext {
 
         mFileSysHandler = new FileSysHandler(mExecutor, getResourceDir(mContext), "file", "rong");
 
-        HttpHandler httpHandler = new DefaultHttpHandler(mContext, mExecutor);
-
-        ResourceRemoteWrapper remoteWrapper = new ResourceRemoteWrapper(mContext, mFileSysHandler, httpHandler);
-
-        File cacheFile = new File(getResourceDir(mContext), "cache");
-        if (!cacheFile.exists())
-            FileUtils.createDirectory(cacheFile, true);
-
-        BitmapLruCache cache = new BitmapLruCache.Builder(mContext).setDiskCacheLocation(cacheFile).setMemoryCacheMaxSize(5 * 1024 * 1204).build();
-
-
-        ResourceCompressHandler compressHandler = new ResourceCompressHandler(mContext, mFileSysHandler);
-
-        ResourceCacheWrapper cacheWrapper = new ResourceCacheWrapper(mContext, cache, mFileSysHandler, compressHandler);
-
-        ResourceManager.init(mContext, remoteWrapper, cacheWrapper);
     }
 
 
@@ -220,7 +196,7 @@ public class DemoContext {
         mRongIMClient = rongIMClient;
     }
 
-    public void registerMessage() {
+    public void registerReceiveMessageListerner() {
 
         mRongIMClient.setOnReceiveMessageListener(new RongIMClient.OnReceiveMessageListener() {
 

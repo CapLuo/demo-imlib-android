@@ -43,7 +43,7 @@
 
     <Button
         android:id="@+id/group_invitation_notification"
-        android:text="GroupInvitationNotification"
+        android:text=" 群组操作通知消息"
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
