@@ -27,6 +27,7 @@ import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.CommandNotificationMessage;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
+import io.rong.message.InformationNotificationMessage;
 import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
@@ -284,6 +285,10 @@ public class DemoContext {
                 }else  if(message.getContent() instanceof CommandNotificationMessage){
                     CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) message.getContent();
                     Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【命令通知消息】-----"+mCommandNotificationMessage.getData()+",getName:"+mCommandNotificationMessage.getName());
+                }else if(message.getContent() instanceof InformationNotificationMessage){
+                    InformationNotificationMessage mInformationNotificationMessage = (InformationNotificationMessage) message.getContent();
+                    Log.d("onReceived", "InformationNotificationMessage--收收收收--接收到一条【小灰条消息】-----"+mInformationNotificationMessage.getMessage()+",getName:"+mInformationNotificationMessage.getExtra());
+
                 }
 
             }

@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.sea_monster.core.utils.FileUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,6 +24,7 @@ import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.CommandNotificationMessage;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
+import io.rong.message.InformationNotificationMessage;
 import io.rong.message.LocationMessage;
 import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
@@ -28,7 +33,7 @@ import io.rong.message.VoiceMessage;
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-    public static final String TOKEN = "eDiyfgBezw3nkykFcMjAWkmcbyeYIrXSDa0nFvL2mH8LR+1EmUiA/Vol1bK3Cvoy167uyKjlDD/WfsYXpExsWw==";
+    public static final String TOKEN = "eDiyfgBezw3nkykFcMjAWkmcbyeYIrXSDa0nFvL2mH8LR+1EmUiA/Vol1bK3Cvoy167uyKjlDD/WfsYXpExsWw==";//
 
     public static RongIMClient mRongIMClient;
     private Button connectButton;
@@ -39,14 +44,14 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private Button reqFriendButton;
     private Button profileNotificationButton;
     private Button commandeNotificationButton;
+    private Button informationNotificationButton;
     private String mUserId;
     private Handler mHandler;
     private Handler mWorkHandler;
     private final static int IMAGEMESSAGE = 1;
     private final static int VOICEMESSAGE = 2;
     /**接收方Id,用于测试*/
-    private String mUserIdTest = "81";
-
+    private String mUserIdTest = "1385";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         reqFriendButton = (Button) findViewById(R.id.req_friend_notification);
         profileNotificationButton = (Button) findViewById(R.id.profile_notification);
         commandeNotificationButton = (Button) findViewById(R.id.command_notification);
+        informationNotificationButton = (Button) findViewById(R.id.information_notification);
 
         connectButton.setOnClickListener(this);
         button1.setOnClickListener(this);
@@ -75,6 +81,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         reqFriendButton.setOnClickListener(this);
         profileNotificationButton.setOnClickListener(this);
         commandeNotificationButton.setOnClickListener(this);
+        informationNotificationButton.setOnClickListener(this);
 
     }
 
@@ -144,6 +151,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     @Override
                     public void run() {
 
+
                         mWorkHandler.post(new SendImageMessageRunnable());
                     }
                 });
@@ -186,16 +194,20 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 sendMessage(command);
 
                 break;
+            case  R.id.information_notification:
+
+                InformationNotificationMessage information  = InformationNotificationMessage.obtain("I'm bob");
+                information.setExtra("hehe");
+                sendMessage(information);
+                break;
             default:
                 break;
         }
 
     }
 
-    private void sendMessage(final RongIMClient.MessageContent msg) {
-
-        if (mRongIMClient != null) {
-
+private void sendMessage(final RongIMClient.MessageContent msg) {
+    if (mRongIMClient != null) {
             mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserIdTest, msg, new RongIMClient.SendMessageCallback() {
 
                 @Override
@@ -226,6 +238,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     }else if(msg instanceof  CommandNotificationMessage){
                         CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) msg;
                         Log.d("sendMessage", "CommandNotificationMessage--发发发发发--发送了一条【命令通知消息】---message--" + mCommandNotificationMessage.getData());
+                    }else if(msg instanceof  InformationNotificationMessage){
+                        InformationNotificationMessage mInformationNotificationMessage = (InformationNotificationMessage) msg;
+                        Log.d("sendMessage", "InformationNotificationMessage--发发发发发--发送了一条【小灰条消息】---message--" + mInformationNotificationMessage.getMessage());
+
                     }
                 }
 
@@ -247,6 +263,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     }
 
 
+
     @Override
     public boolean handleMessage(Message msg) {
 
@@ -256,7 +273,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
         }else if(msg.what == VOICEMESSAGE){
 
         }
-
 
         return false;
     }
@@ -284,31 +300,32 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
         @Override
         public void run() {
-                try {
+            try {
 
-                    InputStream is = getResources().openRawResource(R.raw.pic);
-                    String path = DemoContext.getInstance().getResourceDir();
-                    FileUtil.createFile("pic", path);
-                    Uri uri = Uri.parse(path + "/pic");
+                InputStream is = getResources().openRawResource(R.raw.pics);
+                String path = DemoContext.getInstance().getResourceDir();
+                FileUtil.createFile("pic", path);
+                Uri uri = Uri.parse(path + "/pic");
 
-                    uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
+                uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
 
-                    Bitmap bitmap = BitmapUtils.getResizedBitmap(MainActivity.this, uri, 240, 240);
+                Bitmap bitmap = BitmapUtils.getResizedBitmap(MainActivity.this, uri, 960, 960);
 
-                    if (bitmap != null) {
+                if (bitmap != null) {
 
-                        Uri thumUri = uri.buildUpon().appendQueryParameter("thum", "true").build();
+                    Uri thumUri = uri.buildUpon().appendQueryParameter("thum", "true").build();
 
-                        ImageMessage imageMessage = ImageMessage.obtain(thumUri, uri);
+                    ImageMessage imageMessage = ImageMessage.obtain(thumUri, uri);
 
-                        sendMessage(imageMessage);
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    sendMessage(imageMessage);
                 }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 }
 
 

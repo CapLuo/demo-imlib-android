@@ -69,6 +69,12 @@
             android:id="@+id/command_notification"
             android:text="命令通知消息"/>
 
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:id="@+id/information_notification"
+            android:text="小灰条通知消息"/>
 
     </LinearLayout>
 

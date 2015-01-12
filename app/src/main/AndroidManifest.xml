@@ -30,7 +30,6 @@
             </intent-filter>
         </activity>
 
-
         <!-- begin imlib request -->
 
         <service

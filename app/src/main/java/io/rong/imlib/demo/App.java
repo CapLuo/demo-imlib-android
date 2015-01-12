@@ -8,6 +8,7 @@ import io.rong.imlib.demo.message.GroupInvitationNotification;
 import io.rong.message.CommandNotificationMessage;
 import io.rong.message.ContactNotificationMessage;
 import io.rong.message.ImageMessage;
+import io.rong.message.InformationNotificationMessage;
 import io.rong.message.ProfileNotificationMessage;
 import io.rong.message.TextMessage;
 import io.rong.message.VoiceMessage;
@@ -19,7 +20,6 @@ public class App extends Application {
 
 public static final String APP_KEY = "z3v5yqkbv8v30";
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -28,6 +28,7 @@ public static final String APP_KEY = "z3v5yqkbv8v30";
 
         try {
             RongIMClient.registerMessageType(GroupInvitationNotification.class);
+            RongIMClient.registerMessageType(InformationNotificationMessage.class);
 
         } catch (AnnotationNotFoundException e) {
             e.printStackTrace();
