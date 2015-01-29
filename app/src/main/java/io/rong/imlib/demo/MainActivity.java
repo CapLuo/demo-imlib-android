@@ -12,10 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.sea_monster.core.utils.FileUtils;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -128,7 +124,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     });
 
                     DemoContext.getInstance().setRongIMClient(mRongIMClient);
-                    DemoContext.getInstance().registerReceiveMessageListerner();
+                    DemoContext.getInstance().registerReceiveMessageListener();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -138,7 +134,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
             case android.R.id.button1:
 
-                TextMessage textMessage = TextMessage.obtain("明天不上班。。。。。。今天加班到天亮！！！！发送时间:" + System.currentTimeMillis());
+                TextMessage textMessage = TextMessage.obtain("这是消息。。。。。。春节快乐！！！！发送时间:" + System.currentTimeMillis());
                 textMessage.setExtra("文字消息Extra");
                 textMessage.setPushContent("push 内容setPushContent");
                 sendMessage(textMessage);
