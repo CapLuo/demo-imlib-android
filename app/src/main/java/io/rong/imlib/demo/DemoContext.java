@@ -198,109 +198,105 @@ public class DemoContext {
         mRongIMClient = rongIMClient;
     }
 
-    public void registerReceiveMessageListerner() {
+    public void registerReceiveMessageListener() {
 
-        if (mRongIMClient != null) {
-            mRongIMClient.setOnReceiveMessageListener(mOnReceiveMessageListener);
-        }else {
-            Toast.makeText(mContext,"请重新连接...",Toast.LENGTH_SHORT).show();
-        }
+        mRongIMClient.setOnReceiveMessageListener(onReceiveMessageListener);
     }
-  private  RongIMClient.OnReceiveMessageListener mOnReceiveMessageListener = new RongIMClient.OnReceiveMessageListener() {
-      @Override
-      public void onReceived(RongIMClient.Message message, int left) {
 
-          Log.e("onReceived", "ImageMessage--收收收收--接收到一条----------------------------------");
-          if (message.getContent() instanceof TextMessage) {
-              TextMessage textMessage = (TextMessage) message.getContent();
+    RongIMClient.OnReceiveMessageListener onReceiveMessageListener = new RongIMClient.OnReceiveMessageListener() {
 
-              Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】-----" + textMessage.getContent() + ",getExtra:" + textMessage.getExtra());
-              Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】getPushContent-----" + textMessage.getPushContent());
+        @Override
+        public void onReceived(RongIMClient.Message message, int left) {
 
-          } else if (message.getContent() instanceof ImageMessage) {
+            if (message.getContent() instanceof TextMessage) {
+                TextMessage textMessage = (TextMessage) message.getContent();
 
-              final ImageMessage imageMessage = (ImageMessage) message.getContent();
-              Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】---ThumUri--" + imageMessage.getLocalUri());
-              Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】----Uri--" + imageMessage.getRemoteUri());
+                Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】-----" + textMessage.getContent() + ",getExtra:" + textMessage.getExtra());
+                Log.d("onReceived", "TextMessage---收收收收--接收到一条【文字消息】getPushContent-----" + textMessage.getPushContent());
 
-              new Thread(new Runnable() {
-                  @Override
-                  public void run() {
+            } else if (message.getContent() instanceof ImageMessage) {
 
-                      mRongIMClient.downloadMedia(RongIMClient.ConversationType.PRIVATE, userId, RongIMClient.MediaType.IMAGE, imageMessage.getRemoteUri().toString(), new RongIMClient.DownloadMediaCallback() {
+                final ImageMessage imageMessage = (ImageMessage) message.getContent();
+                Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】---ThumUri--" + imageMessage.getLocalUri());
+                Log.d("onReceived", "ImageMessage--收收收收--接收到一条【图片消息】----Uri--" + imageMessage.getRemoteUri());
 
-                          @Override
-                          public void onProgress(int i) {
-                              Log.d("downloadMedia", "onProgress:" + i);
-                          }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                          @Override
-                          public void onSuccess(String s) {
-                              Log.d("downloadMedia", "onSuccess:" + s);
-                          }
+                        mRongIMClient.downloadMedia(RongIMClient.ConversationType.PRIVATE, userId, RongIMClient.MediaType.IMAGE, imageMessage.getRemoteUri().toString(), new RongIMClient.DownloadMediaCallback() {
 
-                          @Override
-                          public void onError(ErrorCode errorCode) {
-                              Log.d("downloadMedia", "onError:" + errorCode.getValue());
-                          }
-                      });
-                  }
-              }).start();
+                            @Override
+                            public void onProgress(int i) {
+                                Log.d("downloadMedia", "onProgress:" + i);
+                            }
 
-          } else if (message.getContent() instanceof VoiceMessage) {
+                            @Override
+                            public void onSuccess(String s) {
+                                Log.d("downloadMedia", "onSuccess:" + s);
+                            }
 
-              final VoiceMessage voiceMessage = (VoiceMessage) message.getContent();
+                            @Override
+                            public void onError(ErrorCode errorCode) {
+                                Log.d("downloadMedia", "onError:" + errorCode.getValue());
+                            }
+                        });
+                    }
+                }).start();
 
-              Log.d("onReceived", "VoiceMessage--收收收收--接收到一条【语音消息】-----" + voiceMessage.getUri());
+            } else if (message.getContent() instanceof VoiceMessage) {
 
-              new Thread(new Runnable() {
+                final VoiceMessage voiceMessage = (VoiceMessage) message.getContent();
 
-                  @Override
-                  public void run() {
+                Log.d("onReceived", "VoiceMessage--收收收收--接收到一条【语音消息】-----" + voiceMessage.getUri());
 
-                      MediaPlayer mMediaPlayer = new MediaPlayer();
-                      mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                new Thread(new Runnable() {
 
-                          @Override
-                          public void onPrepared(MediaPlayer mp) {
-                              mp.start();
-                          }
-                      });
+                    @Override
+                    public void run() {
 
-                      try {
-                          mMediaPlayer.setDataSource(mContext, voiceMessage.getUri());
-                          mMediaPlayer.prepare();
-                      } catch (IOException e) {
-                          e.printStackTrace();
-                      }
-                  }
-              }).start();
-          } else if (message.getContent() instanceof GroupInvitationNotification) {
+                        MediaPlayer mMediaPlayer = new MediaPlayer();
+                        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
-              GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) message.getContent();
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                mp.start();
+                            }
+                        });
 
-              Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
+                        try {
+                            mMediaPlayer.setDataSource(mContext, voiceMessage.getUri());
+                            mMediaPlayer.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            } else if (message.getContent() instanceof GroupInvitationNotification) {
 
-          } else if (message.getContent() instanceof ContactNotificationMessage) {
-              ContactNotificationMessage mContactNotificationMessage = (ContactNotificationMessage) message.getContent();
-              Log.d("onReceived", "mContactNotificationMessage--收收收收--接收到一条【联系人（好友）操作通知消息】-----" + mContactNotificationMessage.getMessage() + ",getExtra:" + mContactNotificationMessage.getExtra());
+                GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) message.getContent();
 
-          } else if (message.getContent() instanceof ProfileNotificationMessage) {
-              ProfileNotificationMessage mProfileNotificationMessage = (ProfileNotificationMessage) message.getContent();
-              Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【资料变更通知消息】-----" + mProfileNotificationMessage.getData() + ",getExtra:" + mProfileNotificationMessage.getExtra());
+                Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
 
-          } else if (message.getContent() instanceof CommandNotificationMessage) {
-              CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) message.getContent();
-              Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【命令通知消息】-----" + mCommandNotificationMessage.getData() + ",getName:" + mCommandNotificationMessage.getName());
-          } else if (message.getContent() instanceof InformationNotificationMessage) {
-              InformationNotificationMessage mInformationNotificationMessage = (InformationNotificationMessage) message.getContent();
-              Log.d("onReceived", "InformationNotificationMessage--收收收收--接收到一条【小灰条消息】-----" + mInformationNotificationMessage.getMessage() + ",getName:" + mInformationNotificationMessage.getExtra());
+            } else if (message.getContent() instanceof ContactNotificationMessage) {
+                ContactNotificationMessage mContactNotificationMessage = (ContactNotificationMessage) message.getContent();
+                Log.d("onReceived", "mContactNotificationMessage--收收收收--接收到一条【联系人（好友）操作通知消息】-----" + mContactNotificationMessage.getMessage() + ",getExtra:" + mContactNotificationMessage.getExtra());
 
-          }
+            } else if (message.getContent() instanceof ProfileNotificationMessage) {
+                ProfileNotificationMessage mProfileNotificationMessage = (ProfileNotificationMessage) message.getContent();
+                Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【资料变更通知消息】-----" + mProfileNotificationMessage.getData() + ",getExtra:" + mProfileNotificationMessage.getExtra());
 
-      }
+            } else if (message.getContent() instanceof CommandNotificationMessage) {
+                CommandNotificationMessage mCommandNotificationMessage = (CommandNotificationMessage) message.getContent();
+                Log.d("onReceived", "GroupNotificationMessage--收收收收--接收到一条【命令通知消息】-----" + mCommandNotificationMessage.getData() + ",getName:" + mCommandNotificationMessage.getName());
+            } else if (message.getContent() instanceof InformationNotificationMessage) {
+                InformationNotificationMessage mInformationNotificationMessage = (InformationNotificationMessage) message.getContent();
+                Log.d("onReceived", "InformationNotificationMessage--收收收收--接收到一条【小灰条消息】-----" + mInformationNotificationMessage.getMessage() + ",getName:" + mInformationNotificationMessage.getExtra());
 
-  };
+            }
+
+        }
+    };
 
 
 }

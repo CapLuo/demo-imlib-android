@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private final static int IMAGEMESSAGE = 1;
     private final static int VOICEMESSAGE = 2;
     /**接收方Id,用于测试*/
-    private String mUserIdTest = "1234";
+    private String mUserIdTest = "1385";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                     });
 
                     DemoContext.getInstance().setRongIMClient(mRongIMClient);
-                    DemoContext.getInstance().registerReceiveMessageListerner();
+                    DemoContext.getInstance().registerReceiveMessageListener();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -134,8 +134,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
             case android.R.id.button1:
 
-                TextMessage textMessage = TextMessage.obtain("明天不上班。。。。。。今天加班到天亮！！！！发送时间:" + System.currentTimeMillis());
-//                String ss="<a href=\"http://rongcloud.cn\">《XXX条款和服务协议》</a> ";
+                TextMessage textMessage = TextMessage.obtain("这是消息。。。。。。春节快乐！！！！发送时间:" + System.currentTimeMillis());
                 textMessage.setExtra("文字消息Extra");
                 textMessage.setPushContent("push 内容setPushContent");
                 sendMessage(textMessage);
@@ -143,9 +142,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 break;
             case android.R.id.button2:
 
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+
+
                         mWorkHandler.post(new SendImageMessageRunnable());
                     }
                 });
@@ -156,6 +158,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+
                         mWorkHandler.post(new SendVoiceMessageRunnable());
                     }
                 });
@@ -199,9 +202,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
     }
 
-private void sendMessage(final RongIMClient.MessageContent msg) {
-    if (mRongIMClient != null) {
-            mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserId, msg, new RongIMClient.SendMessageCallback() {
+    private void sendMessage(final RongIMClient.MessageContent msg) {
+        if (mRongIMClient != null) {
+            mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserIdTest, msg, new RongIMClient.SendMessageCallback() {
 
                 @Override
                 public void onSuccess(int id) {
@@ -320,5 +323,3 @@ private void sendMessage(final RongIMClient.MessageContent msg) {
     }
 
 }
-
-
