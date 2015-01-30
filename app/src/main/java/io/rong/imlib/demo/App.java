@@ -5,28 +5,25 @@ import android.app.Application;
 import io.rong.imlib.AnnotationNotFoundException;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.demo.message.GroupInvitationNotification;
-import io.rong.message.CommandNotificationMessage;
-import io.rong.message.ContactNotificationMessage;
-import io.rong.message.ImageMessage;
 import io.rong.message.InformationNotificationMessage;
-import io.rong.message.ProfileNotificationMessage;
-import io.rong.message.TextMessage;
-import io.rong.message.VoiceMessage;
 
 /**
  * Created by zhjchen on 14/11/6.
  */
 public class App extends Application {
 
-public static final String APP_KEY = "z3v5yqkbv8v30";
-
     @Override
     public void onCreate() {
         super.onCreate();
 
-        RongIMClient.init(this, APP_KEY, R.drawable.ic_launcher);
+        /**
+         *  IMLib SDK调用第一步 初始化
+         * context上下文
+         */
+        RongIMClient.init(this);
 
         try {
+            //注册自定义消息类型
             RongIMClient.registerMessageType(GroupInvitationNotification.class);
             RongIMClient.registerMessageType(InformationNotificationMessage.class);
 
@@ -36,6 +33,5 @@ public static final String APP_KEY = "z3v5yqkbv8v30";
 
         DemoContext.getInstance().init(this);
 
-//        System.loadLibrary("imdemo");
     }
 }
