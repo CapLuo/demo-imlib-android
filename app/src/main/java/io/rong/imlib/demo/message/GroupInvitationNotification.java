@@ -14,7 +14,7 @@ import io.rong.imlib.RongIMClient;
 /**
  * Created by zhjchen on 14/11/7.
  */
-@MessageTag(value = "RC:GroupInvationMsg", flag = MessageTag.ISPERSISTED)
+@MessageTag(value = "RC:GroupInvationMsg", flag = MessageTag.ISPERSISTED |  MessageTag.ISCOUNTED)
 public class GroupInvitationNotification extends RongIMClient.MessageContent {
 
     private String groupId;

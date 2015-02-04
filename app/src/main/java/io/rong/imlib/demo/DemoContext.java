@@ -7,7 +7,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.sea_monster.core.common.Const;
 import com.sea_monster.core.common.DiscardOldestPolicy;
@@ -277,6 +276,7 @@ public class DemoContext {
                 GroupInvitationNotification groupInvitationNotification = (GroupInvitationNotification) message.getContent();
 
                 Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息】-----" + groupInvitationNotification.getMessage());
+                Log.d("onReceived", "GroupInvitationNotification--收收收收--接收到一条【群组邀请消息getPushContent】-----" + groupInvitationNotification.getPushContent());
 
             } else if (message.getContent() instanceof ContactNotificationMessage) {
                 ContactNotificationMessage mContactNotificationMessage = (ContactNotificationMessage) message.getContent();

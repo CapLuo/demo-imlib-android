@@ -29,7 +29,8 @@ import io.rong.message.VoiceMessage;
 
 public class MainActivity extends Activity implements View.OnClickListener, Handler.Callback {
 
-    public static final String TOKEN = "eDiyfgBezw3nkykFcMjAWkmcbyeYIrXSDa0nFvL2mH8LR+1EmUiA/Vol1bK3Cvoy167uyKjlDD/WfsYXpExsWw==";//
+    public static final String TOKEN = "HtymJWYc8lTwfKgcAN9P57I6ZiT8q7s0UEaMPWY0lMw1SnA9yXU+KsOb5slbLWhxvJ6WgjQYA7h94DvkFpmc5g==";//112
+//    public static final String TOKEN = "2GvCp1Vc91J8dtWDR/B5Q7I6ZiT8q7s0UEaMPWY0lMw1SnA9yXU+KoH17mDziKrz4kYf8eqhqNmgCr1L64+kRQ==";//111
 
     public static RongIMClient mRongIMClient;
     private Button connectButton;
@@ -47,7 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     private final static int IMAGEMESSAGE = 1;
     private final static int VOICEMESSAGE = 2;
     /**接收方Id,用于测试*/
-    private String mUserIdTest = "1385";
+    private String mUserIdTest = "6878";//111
+//    private String mUserIdTest = "6881";//112
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +169,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
             case R.id.group_invitation_notification:
 
                 GroupInvitationNotification  group = new GroupInvitationNotification(mUserIdTest, "张三邀请你加入xxx群");
+                group.setPushContent("张三邀请你加 PushContent");
                 sendMessage(group);
 
                 break;
