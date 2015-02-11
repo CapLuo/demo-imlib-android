@@ -26,7 +26,7 @@ public class GroupInvitationNotification extends RongIMClient.MessageContent {
         this.message = message;
     }
 
-    public GroupInvitationNotification(byte[] data, RongIMClient.Message message) {
+    public GroupInvitationNotification(byte[] data) {
         String jsonStr = null;
 
         try {
