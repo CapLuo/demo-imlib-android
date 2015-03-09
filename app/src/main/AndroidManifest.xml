@@ -42,7 +42,7 @@
 
         <service
             android:name="io.rong.imlib.push.PushService"
-            android:process=":push">
+            android:process="io.rong.push">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="io.rong.push" />
@@ -51,7 +51,7 @@
 
         <service
             android:name="io.rong.imlib.push.CommandService"
-            android:process=":push">
+            android:process="io.rong.push">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="io.rong.command" />
@@ -60,7 +60,7 @@
 
         <receiver
             android:name="io.rong.imlib.push.PushReceiver"
-            android:process=":push">
+            android:process="io.rong.push">
             <intent-filter>
                 <action android:name="io.rong.imlib.action.push.heartbeat" />
             </intent-filter>

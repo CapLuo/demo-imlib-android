@@ -43,4 +43,5 @@ dependencies {
     compile fileTree(dir: 'src/main/libs', include: ['*.jar'])
     compile files('src/main/libs/Rong_IMLib_v1_3_3.jar')
     compile files('src/main/libs/Rong_IMLib_v1_3_4.jar')
+    compile files('src/main/libs/Rong_IMLib_v1_4_1.jar')
 }
