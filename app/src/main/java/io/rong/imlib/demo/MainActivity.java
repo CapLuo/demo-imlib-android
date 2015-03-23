@@ -32,6 +32,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     public static final String TOKEN = "HtymJWYc8lTwfKgcAN9P57I6ZiT8q7s0UEaMPWY0lMw1SnA9yXU+KsOb5slbLWhxvJ6WgjQYA7h94DvkFpmc5g==";//112
 //    public static final String TOKEN = "2GvCp1Vc91J8dtWDR/B5Q7I6ZiT8q7s0UEaMPWY0lMw1SnA9yXU+KoH17mDziKrz4kYf8eqhqNmgCr1L64+kRQ==";//111
 
+
+
     public static RongIMClient mRongIMClient;
     private Button connectButton;
     private Button button1;
@@ -50,6 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
     /**接收方Id,用于测试*/
     private String mUserIdTest = "6878";//111
 //    private String mUserIdTest = "6881";//112
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +116,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
                         @Override
                         public void onError(ErrorCode errorCode) {
-                            Log.d("App", "--connect--errorCode-------" + errorCode.getValue());
+                            Log.d("App", "--connect--errorCode-------" + errorCode);
 
                             runOnUiThread(new Runnable() {
 
@@ -172,6 +175,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 group.setPushContent("张三邀请你加 PushContent");
                 sendMessage(group);
 
+
                 break;
             case R.id.req_friend_notification://联系人（好友）操作通知消息
 
@@ -207,7 +211,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
 
     private void sendMessage(final RongIMClient.MessageContent msg) {
         if (mRongIMClient != null) {
-            mRongIMClient.sendMessage(RongIMClient.ConversationType.PRIVATE, mUserIdTest, msg, new RongIMClient.SendMessageCallback() {
+            mRongIMClient.sendMessage(RongIMClient.ConversationType.SYSTEM, mUserIdTest, msg, new RongIMClient.SendMessageCallback() {
 
                 @Override
                 public void onSuccess(int id) {
@@ -220,7 +224,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                         Log.d("sendMessage", "ImageMessage--发发发发发--发送了一条【图片消息】--uri---" + imageMessage.getThumUri());
                     } else if (msg instanceof VoiceMessage) {
                         VoiceMessage voiceMessage = (VoiceMessage) msg;
-                        Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---uri--" + voiceMessage.getUri());
+                        Log.e("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】---getExtra--" + voiceMessage.getExtra());
                         Log.d("sendMessage", "VoiceMessage--发发发发发--发送了一条【语音消息】--长度---" + voiceMessage.getDuration());
                     }else if(msg instanceof  LocationMessage){
                         LocationMessage location  = (LocationMessage) msg;
@@ -288,6 +292,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Hand
                 Uri uri = Uri.parse(path + "/voice");
                 uri = FileUtil.writeByte(uri, FileUtil.toByteArray(is));
                 VoiceMessage voiceMessage = VoiceMessage.obtain(uri, 10 * 5);
+                voiceMessage.setExtra("I'm Bob,test voice");
                 sendMessage(voiceMessage);
 
             } catch (IOException e) {

@@ -21,6 +21,7 @@ public class App extends Application {
          * context上下文
          */
         RongIMClient.init(this);
+//        RongIMClient.init(getApplicationContext(),"z3v5yqkbv8v30", R.drawable.ic_launcher);
 
         try {
             //注册自定义消息类型
@@ -32,6 +33,10 @@ public class App extends Application {
         }
 
         DemoContext.getInstance().init(this);
-
+        try {
+            System.loadLibrary("imdemo");
+        } catch (UnsatisfiedLinkError e) {
+//            e.printStackTrace();
+        }
     }
 }

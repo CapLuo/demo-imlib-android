@@ -247,7 +247,8 @@ public class DemoContext {
 
                 final VoiceMessage voiceMessage = (VoiceMessage) message.getContent();
 
-                Log.d("onReceived", "VoiceMessage--收收收收--接收到一条【语音消息】-----" + voiceMessage.getUri());
+//                Log.d("onReceived", "VoiceMessage--收收收收--接收到一条【语音消息】-----" + voiceMessage.getUri());
+                Log.e("onReceived", "VoiceMessage--收收收收--接收到一条【语音消息】 voiceMessage.getExtra-----" + voiceMessage.getExtra());
 
                 new Thread(new Runnable() {
 
